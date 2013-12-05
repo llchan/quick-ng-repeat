@@ -3,7 +3,7 @@ angular.module('QuickList', []);
 angular.module('QuickList').value('quickRepeatList', {});
 
 angular.module('QuickList').directive('quickNgRepeat',
-['$parse', '$animate', 'quickRepeatList', function($parse, $animate, quick_repeat_list) {
+['$parse', '$animate', '$interpolate', 'quickRepeatList', function($parse, $animate, $interpolate, quick_repeat_list) {
   var NG_REMOVED = '$$NG_REMOVED';
   var ngRepeatMinErr = 'err';
   var uid = ['0', '0', '0'];
@@ -128,7 +128,12 @@ angular.module('QuickList').directive('quickNgRepeat',
         //   - index: position
         var lastBlockMap = {};
 
-        var list_name = $attr.quickRepeatList || list_id();
+        var list_name = $attr.quickRepeatList;
+        if (list_name) {
+          list_name = $interpolate(list_name)($scope);
+        } else {
+          list_name = list_id();
+        }
 
         //watch props
         $scope.$watch(rhs, quick_repeat_list[list_name] = function(collection){
